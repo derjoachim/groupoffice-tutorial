@@ -43,7 +43,22 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 						dlg.show();
 					},
 					scope: this
-				})
+				}),
+
+				{
+					iconCls: 'ic-more-vert',
+					menu: [
+						{
+							itemId: "delete",
+							iconCls: 'ic-delete',
+							text: t("Delete"),
+							handler: function () {
+								this.artistGrid.deleteSelected();
+							},
+							scope: this
+						}
+					]
+				}
 			],
 
 			listeners: {
