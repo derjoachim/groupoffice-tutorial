@@ -2,3 +2,4 @@ Module.js
 MainPanel.js
 GenreFilter.js
 ArtistGrid.js
+GenreCombo.js
