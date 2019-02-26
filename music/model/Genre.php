@@ -27,7 +27,7 @@ class Genre extends Entity {
 
 	protected static function defineMapping() {
 		return parent::defineMapping()
-						->addTable("music_genre");
+						->addTable("music_genre", "genre");
 	}
 
 }

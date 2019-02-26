@@ -3,6 +3,7 @@
 namespace go\modules\tutorial\music\model;
 
 use go\core\jmap\Entity;
+use go\core\orm\Filters;
 use go\core\util\DateTime;
 
 /**
@@ -65,8 +66,28 @@ class Artist extends Entity {
 
 	protected static function defineMapping() {
 		return parent::defineMapping()
-						->addTable("music_artist")
-						->addRelation('albums', Album::class, ['id' => 'artistId']);
+										->addTable("music_artist", "artist")
+										->addRelation('albums', Album::class, ['id' => 'artistId']);
+	}
+
+	/**
+	 * Defines JMAP filters
+	 *
+	 * Adds the 'genres' filter which can be an array of genre id's.
+	 *
+	 * @link https://jmap.io/spec-core.html#/query
+	 *
+	 * @return Filters
+	 */
+	protected static function defineFilters() {
+		return parent::defineFilters()
+										->add('genres', function (\go\core\db\Criteria $criteria, $value, \go\core\orm\Query $query, array $filter) {
+											if (!empty($value)) {
+												$query->join('music_album', 'album', 'album.artistId = artist.id')
+												->groupBy(['artist.id']) // group the results by id to filter out duplicates because of the join
+												->where(['album.genreId' => $value]);
+											}
+										});
 	}
 
 }

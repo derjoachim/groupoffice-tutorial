@@ -45,7 +45,7 @@ class Album extends Property {
 
 	protected static function defineMapping() {
 		return parent::defineMapping()
-						->addTable("music_album");
+						->addTable("music_album", "album");
 	}
 
 }
