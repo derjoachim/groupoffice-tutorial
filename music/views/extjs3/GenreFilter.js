@@ -20,7 +20,7 @@ go.modules.tutorial.music.GenreFilter = Ext.extend(go.grid.GridPanel, {
 			xtype: "container",
 			items: [
 				{
-					items: config.tbar || [],
+					items: this.tbar || [],
 					xtype: 'toolbar'
 				},
 				new Ext.Toolbar({
