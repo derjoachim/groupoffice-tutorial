@@ -52,13 +52,13 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 
 						if (!this.template) {
 							this.template = new Ext.XTemplate('<div class="icons">\
-                                        <tpl for=".">\
-                                                <p class="s6"><tpl if="xindex == 1"><i class="icon label">album</i></tpl>\
-                                                        <span>{name}</span>\
-                                                        <label>{[GO.util.dateFormat(values.releaseDate)]} - {[go.Stores.get("Genre").get([values.genreId])[0].name]}</label>\
-                                                </p>\
-                                        </tpl>\
-                                        </div>').compile();
+								<tpl for=".">\
+												<p class="s6"><tpl if="xindex == 1"><i class="icon label">album</i></tpl>\
+																<span>{name}</span>\
+																<label>{[go.util.Format.date(values.releaseDate)]} - {[go.Stores.get("Genre").data[values.genreId].name]}</label>\
+												</p>\
+								</tpl>\
+								</div>').compile();
 						}
 
 						//make sure genres are loaded before rendering the album template

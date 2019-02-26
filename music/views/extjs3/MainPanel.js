@@ -3,6 +3,11 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 	// Use a responsive layout
 	layout: "responsive",
 
+	// change responsive mode on 1000 pixels
+	layoutConfig: {
+		triggerWidth: 1000
+	},
+
 	initComponent: function () {
 
 		//create the genre filter component
@@ -16,15 +21,38 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 			tbar: [{
 					xtype: "tbtitle",
 					text: t("Genres")
-				}]
+				},
+				'->',
+
+				//add back button for smaller screens
+				{
+					//this class will hide it on larger screens
+					cls: 'go-narrow',
+					iconCls: "ic-arrow-forward",
+					tooltip: t("Artists"),
+					handler: function () {
+						this.artistGrid.show();
+					},
+					scope: this
+				}
+			]
 		});
 
 		//Create the artist grid
 		this.artistGrid = new go.modules.tutorial.music.ArtistGrid({
 			region: "center",
 
-			//toolbar with just a search component for now
 			tbar: [
+				//add a hamburger button for smaller screens
+				{
+					//this class will hide the button on large screens
+					cls: 'go-narrow',
+					iconCls: "ic-menu",
+					handler: function () {
+						this.genreFilter.show();
+					},
+					scope: this
+				},
 				'->',
 				{
 					xtype: 'tbsearch'
@@ -44,7 +72,6 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 					},
 					scope: this
 				}),
-
 				{
 					iconCls: 'ic-more-vert',
 					menu: [
@@ -68,8 +95,46 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 			}
 		});
 
+		// Every entity automatically configures a route. Route to the entity when selecting it in the grid.
+		this.artistGrid.on('navigate', function (grid, rowIndex, record) {
+			go.Router.goto("artist/" + record.id);
+		}, this);
+
+		// Create artist detail component
+		this.artistDetail = new go.modules.tutorial.music.ArtistDetail({
+			region: "center",
+			tbar: [
+				//add a back button for small screens
+				{
+					// this class will hide the button on large screens
+					cls: 'go-narrow',
+					iconCls: "ic-arrow-back",
+					handler: function () {
+						this.westPanel.show();
+					},
+					scope: this
+				}]
+		});
+
+		//Wrap the grids into another panel with responsive layout for the 3 column responsive layout to work.
+		this.westPanel = new Ext.Panel({
+			region: "west",
+			layout: "responsive",
+			stateId: "go-music-west",
+			split: true,
+			width: dp(800),
+			narrowWidth: dp(500), //this will only work for panels inside another panel with layout=responsive. Not ideal but at the moment the only way I could make it work
+			items: [
+				this.artistGrid, //first item is shown as default in narrow mode.
+				this.genreFilter
+			]
+		});
+
 		//add the components to the main panel's items.
-		this.items = [this.genreFilter, this.artistGrid];
+		this.items = [
+			this.westPanel, //first is default in narrow mode
+			this.artistDetail
+		];
 
 		// Call the parent class' initComponent
 		go.modules.tutorial.music.MainPanel.superclass.initComponent.call(this);
@@ -118,6 +183,7 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 		if (e.keyCode != e.ENTER) {
 			return;
 		}
+		
 		var record = this.artistGrid.getSelectionModel().getSelected();
 		if (!record) {
 			return;
