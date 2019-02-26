@@ -11,10 +11,11 @@ go.modules.tutorial.music.GenreCombo = Ext.extend(go.form.ComboBox, {
         selectOnFocus: true,
         forceSelection: true,
         allowBlank: false,
-        store: new go.data.Store({
-                fields: ['id', 'name'],
-                entityStore: "Genre"
-        })
+        store: {
+					xtype: "gostore",
+					fields: ['id', 'name'],
+					entityStore: "Genre"
+        }
 });
 
 // Register an xtype so we can use the component easily.

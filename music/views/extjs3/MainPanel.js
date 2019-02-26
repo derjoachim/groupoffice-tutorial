@@ -28,8 +28,29 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 				'->',
 				{
 					xtype: 'tbsearch'
-				}
-			]
+				},
+
+				// add button for creating new artists
+				this.addButton = new Ext.Button({
+					iconCls: 'ic-add',
+					tooltip: t('Add'),
+					handler: function (btn) {
+						var dlg = new go.modules.tutorial.music.ArtistDialog({
+							formValues: {
+								// you can pass form values like this
+							}
+						});
+						dlg.show();
+					},
+					scope: this
+				})
+			],
+
+			listeners: {
+				rowdblclick: this.onGridDblClick,
+				keypress: this.onGridKeyPress,
+				scope: this
+			}
 		});
 
 		//add the components to the main panel's items.
@@ -61,5 +82,39 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 		// when this panel renders, load the genres and artists.
 		this.genreFilter.store.load();
 		this.artistGrid.store.load();
+	},
+
+	// Fires when an artist is double clicked in the grid.
+	onGridDblClick: function (grid, rowIndex, e) {
+
+		//check permissions
+		var record = grid.getStore().getAt(rowIndex);
+		if (record.get('permissionLevel') < GO.permissionLevels.write) {
+			return;
+		}
+
+		// Show dialog
+		var dlg = new go.modules.tutorial.music.ArtistDialog();
+		dlg.load(record.id).show();
+	},
+
+	// Fires when enter is pressed and a grid row is focussed
+	onGridKeyPress: function (e) {
+		if (e.keyCode != e.ENTER) {
+			return;
+		}
+		var record = this.artistGrid.getSelectionModel().getSelected();
+		if (!record) {
+			return;
+		}
+
+		if (record.get('permissionLevel') < GO.permissionLevels.write) {
+			return;
+		}
+
+		var dlg = new go.modules.tutorial.music.ArtistDialog();
+		dlg.load(record.id).show();
+
 	}
+
 });

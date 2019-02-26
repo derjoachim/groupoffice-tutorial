@@ -3,3 +3,4 @@ MainPanel.js
 GenreFilter.js
 ArtistGrid.js
 GenreCombo.js
+ArtistDialog.js
