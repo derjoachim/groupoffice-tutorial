@@ -1,7 +1,8 @@
 <?php
 namespace go\modules\tutorial\music\model;
-						
-use go\core\orm\Property;
+
+use go\core\jmap\Entity;
+use go\core\util\DateTime;
 						
 /**
  * Artist model
@@ -11,7 +12,7 @@ use go\core\orm\Property;
  * @license http://www.gnu.org/licenses/agpl-3.0.html AGPLv3
  */
 
-class Artist extends Property {
+class Artist extends Entity {
 	
 	/**
 	 * 
@@ -33,13 +34,13 @@ class Artist extends Property {
 
 	/**
 	 * 
-	 * @var \go\core\util\DateTime
+	 * @var DateTime
 	 */							
 	public $createdAt;
 
 	/**
 	 * 
-	 * @var \go\core\util\DateTime
+	 * @var DateTime
 	 */							
 	public $modifiedAt;
 

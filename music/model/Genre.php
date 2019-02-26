@@ -1,7 +1,7 @@
 <?php
 namespace go\modules\tutorial\music\model;
-						
-use go\core\orm\Property;
+
+use go\core\jmap\Entity;
 						
 /**
  * Genre model
@@ -11,7 +11,7 @@ use go\core\orm\Property;
  * @license http://www.gnu.org/licenses/agpl-3.0.html AGPLv3
  */
 
-class Genre extends Property {
+class Genre extends Entity {
 	
 	/**
 	 * 
