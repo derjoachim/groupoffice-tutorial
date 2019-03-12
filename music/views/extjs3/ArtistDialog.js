@@ -64,7 +64,6 @@ go.modules.tutorial.music.ArtistDialog = Ext.extend(go.form.Dialog, {
 
 						//the itemCfg is used to create a component for each "album" in the array.
 						itemCfg: {
-							layout: "form",
 							defaults: {
 								anchor: "100%"
 							},
