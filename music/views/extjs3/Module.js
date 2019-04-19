@@ -13,8 +13,10 @@ go.Modules.register("tutorial", "music", {
                     creator: {store: "User", fk: "createdBy"},
                     modifier: {store: "User", fk: "createdBy"},
 
-                    // Use "." to specify paths.
-                    "albums.genre" : {store: "Genre", fk: "albums.genreId"}
+                    // 'albums' is a property of artist and has a nested relation.
+                    albums: {
+                         genre:  {store: "Genre", fk: "genreId"}
+                    }
                }
           }
      ],
