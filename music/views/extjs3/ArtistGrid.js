@@ -11,10 +11,10 @@ go.modules.tutorial.music.ArtistGrid = Ext.extend(go.grid.GridPanel, {
 				{name: 'createdAt', type: 'date'},
 				{name: 'modifiedAt', type: 'date'},
 
-				// You can use any entity as a store data type. This will autmatically
-				// fetch the related entity by key.
-				{name: 'creator', type: "User", key: 'createdBy'},
-				{name: 'modifier', type: "User", key: 'modifiedBy'},
+				// You can use "relation" as a store data type. This will autmatically
+				// fetch the related entity by the definition in Module.js.
+				{name: 'creator', type: "relation"},
+				{name: 'modifier', type: "relation"},
 
 				// Every entity has permission levels. GO.permissionLevels.read, write,
 				// writeAndDelete and manage

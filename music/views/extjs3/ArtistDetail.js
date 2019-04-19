@@ -7,6 +7,9 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 	stateful: false,
 	stateId: 'music-contact-detail',
 
+	// Fetch these relations for this view
+	relations: ["albums.genre"],
+
 	initComponent: function () {
 		this.tbar = this.initToolbar();
 
@@ -27,14 +30,14 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 					cls: "content",
 					tpl: new Ext.XTemplate('<div class="go-detail-view-avatar">\
 <div class="avatar" style="{[this.getStyle(values.photo)]}"></div></div>',
-									{
-										getCls: function (isOrganization) {
-											return isOrganization ? "organization" : "";
-										},
-										getStyle: function (photoBlobId) {
-											return photoBlobId ? 'background-image: url(' + go.Jmap.downloadUrl(photoBlobId) + ')"' : "";
-										}
-									})
+						{
+							getCls: function (isOrganization) {
+								return isOrganization ? "organization" : "";
+							},
+							getStyle: function (photoBlobId) {
+								return photoBlobId ? 'background-image: url(' + go.Jmap.downloadUrl(photoBlobId) + ')"' : "";
+							}
+						})
 				},
 
 				// Albums component
@@ -42,36 +45,17 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 					collapsible: true,
 					title: t("Albums"),
 					xtype: "panel",
-
-					//onLoad is called on each item. The DetailView is passed as argument
-					onLoad: function (dv) {
-						this.setVisible(dv.data.albums.length);
-						if (!dv.data.albums.length) {
-							return;
-						}
-
-						if (!this.template) {
-							this.template = new Ext.XTemplate('<div class="icons">\
-								<tpl for=".">\
-												<p class="s6"><tpl if="xindex == 1"><i class="icon label">album</i></tpl>\
-																<span>{name}</span>\
-																<label>{[go.util.Format.date(values.releaseDate)]} - {[go.Stores.get("Genre").data[values.genreId].name]}</label>\
-												</p>\
-								</tpl>\
-								</div>').compile();
-						}
-
-						//make sure genres are loaded before rendering the album template
-						var ids = dv.data.albums.column('genreId');
-
-						go.Stores.get("Genre").get(ids, function (genres) {
-							this.update(this.template.apply(dv.data.albums));
-						}, this);
-					}
+					tpl: '<div class="icons">\
+						<tpl for="albums">\
+									<p class="s6"><tpl if="xindex == 1"><i class="icon label">album</i></tpl>\
+													<span>{name}</span>\
+													<label>{[go.util.Format.date(values.releaseDate)]} - <tpl for="genre">{name}</tpl></label>\
+									</p>\
+					</tpl>\
+					</div>'
 				}
 			]
 		});
-
 
 		go.modules.tutorial.music.ArtistDetail.superclass.initComponent.call(this);
 
@@ -109,15 +93,15 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 				iconCls: 'ic-more-vert',
 				menu: [
 					{
-						iconCls: "btn-print",
+						iconCls: "ic-print",
 						text: t("Print"),
 						handler: function () {
-							this.body.print({title: this.data.name});
+							this.body.print({ title: this.data.name });
 						},
 						scope: this
 					},
 					'-',
-					this.deleteItem = new Ext.menu.TextItem({
+					this.deleteItem = new Ext.menu.Item({
 						itemId: "delete",
 						iconCls: 'ic-delete',
 						text: t("Delete"),
@@ -126,7 +110,7 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 								if (btn != "yes") {
 									return;
 								}
-								this.entityStore.set({destroy: [this.currentId]});
+								this.entityStore.set({ destroy: [this.currentId] });
 							}, this);
 						},
 						scope: this

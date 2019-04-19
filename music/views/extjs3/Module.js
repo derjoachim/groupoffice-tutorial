@@ -5,7 +5,19 @@ go.Modules.register("tutorial", "music", {
      title: t("Music"),
 
      //All module entities must be defined here. Stores will be created for them.
-     entities: ["Genre", "Artist"],
+     entities: [
+          "Genre", 
+          {
+               name: "Artist",
+               relations: {
+                    creator: {store: "User", fk: "createdBy"},
+                    modifier: {store: "User", fk: "createdBy"},
+
+                    // Use "." to specify paths.
+                    "albums.genre" : {store: "Genre", fk: "albums.genreId"}
+               }
+          }
+     ],
 
      //Put code to initialize the module here after the user is authenticated 
 		 //and has access to the module.

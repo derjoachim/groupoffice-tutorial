@@ -115,7 +115,7 @@ go.modules.tutorial.music.GenreFilter = Ext.extend(go.grid.GridPanel, {
 								if (btn != "yes") {
 									return;
 								}
-								go.Stores.get("Genre").set({destroy: [this.moreMenu.record.id]});
+								go.Db.store("Genre").set({destroy: [this.moreMenu.record.id]});
 							}, this);
 						},
 						scope: this
