@@ -64,8 +64,8 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 	onLoad: function () {
 
 		// Enable edit button according to permission level.
-		this.getTopToolbar().getComponent("edit").setDisabled(this.data.permissionLevel < GO.permissionLevels.write);
-		this.deleteItem.setDisabled(this.data.permissionLevel < GO.permissionLevels.writeAndDelete);
+		this.getTopToolbar().getComponent("edit").setDisabled(this.data.permissionLevel < go.permissionLevels.write);
+		this.deleteItem.setDisabled(this.data.permissionLevel < go.permissionLevels.writeAndDelete);
 
 		go.modules.tutorial.music.ArtistDetail.superclass.onLoad.call(this);
 	},

@@ -16,7 +16,7 @@ go.modules.tutorial.music.ArtistGrid = Ext.extend(go.grid.GridPanel, {
 				{name: 'creator', type: "relation"},
 				{name: 'modifier', type: "relation"},
 
-				// Every entity has permission levels. GO.permissionLevels.read, write,
+				// Every entity has permission levels. go.permissionLevels.read, write,
 				// writeAndDelete and manage
 				'permissionLevel'
 			],

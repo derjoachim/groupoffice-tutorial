@@ -169,7 +169,7 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 
 		//check permissions
 		var record = grid.getStore().getAt(rowIndex);
-		if (record.get('permissionLevel') < GO.permissionLevels.write) {
+		if (record.get('permissionLevel') < go.permissionLevels.write) {
 			return;
 		}
 
@@ -189,7 +189,7 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 			return;
 		}
 
-		if (record.get('permissionLevel') < GO.permissionLevels.write) {
+		if (record.get('permissionLevel') < go.permissionLevels.write) {
 			return;
 		}
 
