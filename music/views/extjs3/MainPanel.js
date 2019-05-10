@@ -110,7 +110,7 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 					cls: 'go-narrow',
 					iconCls: "ic-arrow-back",
 					handler: function () {
-						this.westPanel.show();
+						go.Router.goto("music");
 					},
 					scope: this
 				}]
