@@ -67,7 +67,7 @@ class Artist extends Entity {
 	protected static function defineMapping() {
 		return parent::defineMapping()
 										->addTable("music_artist", "artist")
-										->addRelation('albums', Album::class, ['id' => 'artistId']);
+										->addArray('albums', Album::class, ['id' => 'artistId']);
 	}
 
 	/**
