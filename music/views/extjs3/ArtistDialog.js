@@ -15,27 +15,10 @@ go.modules.tutorial.music.ArtistDialog = Ext.extend(go.form.Dialog, {
 				// it's recommended to wrap all fields in field sets for consistent style.
 				xtype: 'fieldset',
 				title: t("Artist information"),
-				items: [{
-						// The go.form.FileField component can handle "blob" fields.
-						xtype: "filefield",
-						hideLabel: true,
-						buttonOnly: true,
-						name: 'photo',
-						height: dp(120),
-						cls: "avatar",
-						autoUpload: true,
-						buttonCfg: {
-							text: '',
-							width: dp(120)
-						},
-						setValue: function (val) {
-							if (this.rendered && !Ext.isEmpty(val)) {
-								this.wrap.setStyle('background-image', 'url(' + go.Jmap.downloadUrl(val) + ')');
-							}
-							go.form.FileField.prototype.setValue.call(this, val);
-						},
-						accept: 'image/*'
-					},
+				items: [
+					this.avatarComp = new go.form.ImageField({			
+						name: 'photo'										
+					}),
 
 					{
 						xtype: 'textfield',
