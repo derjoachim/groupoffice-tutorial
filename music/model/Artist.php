@@ -71,6 +71,13 @@ class Artist extends Entity {
 	}
 
 	/**
+   * This function returns the columns to search when using the "text" filter.
+   */
+  public static function textFilterColumns() {
+    return ['name'];
+  }
+
+	/**
 	 * Defines JMAP filters
 	 *
 	 * Adds the 'genres' filter which can be an array of genre id's.
