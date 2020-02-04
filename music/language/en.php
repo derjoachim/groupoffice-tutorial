@@ -1,5 +1,5 @@
 <?php
 return [
-		'name' => 'Music',
-		'description' => 'Simple module for the Group-Office tutorial'
+	'name' => 'Music',
+	'description' => 'Simple tutorial module for Group-Office',
 ];

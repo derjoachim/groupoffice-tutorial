@@ -19,9 +19,9 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 			split: true,
 
 			tbar: [{
-					xtype: "tbtitle",
-					text: t("Genres")
-				},
+				xtype: "tbtitle",
+				text: t("Genres")
+			},
 				'->',
 
 				//add back button for smaller screens
@@ -74,6 +74,7 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 				}),
 				{
 					iconCls: 'ic-more-vert',
+					tooltip: t("More options"),
 					menu: [
 						{
 							itemId: "delete",
@@ -90,7 +91,6 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 
 			listeners: {
 				rowdblclick: this.onGridDblClick,
-				keypress: this.onGridKeyPress,
 				scope: this
 			}
 		});
@@ -110,7 +110,7 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 					cls: 'go-narrow',
 					iconCls: "ic-arrow-back",
 					handler: function () {
-						go.Router.goto("music");
+						this.westPanel.show();
 					},
 					scope: this
 				}]
@@ -151,9 +151,9 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 	onGenreFilterChange: function (sm) {
 
 		var selectedRecords = sm.getSelections(),
-						ids = selectedRecords.column('id'); //column is a special GO method that get's all the id's from the records in an array.
+			ids = selectedRecords.column('id'); //column is a special GO method that get's all the id's from the records in an array.
 
-		this.artistGrid.store.baseParams.filter.genres = ids;
+		this.artistGrid.store.setFilter('genres', {genres: ids});
 		this.artistGrid.store.load();
 	},
 
@@ -169,33 +169,12 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 
 		//check permissions
 		var record = grid.getStore().getAt(rowIndex);
-		if (record.get('permissionLevel') < go.permissionLevels.write) {
+		if (record.get('permissionLevel') < GO.permissionLevels.write) {
 			return;
 		}
 
 		// Show dialog
 		var dlg = new go.modules.tutorial.music.ArtistDialog();
 		dlg.load(record.id).show();
-	},
-
-	// Fires when enter is pressed and a grid row is focussed
-	onGridKeyPress: function (e) {
-		if (e.keyCode != e.ENTER) {
-			return;
-		}
-		
-		var record = this.artistGrid.getSelectionModel().getSelected();
-		if (!record) {
-			return;
-		}
-
-		if (record.get('permissionLevel') < go.permissionLevels.write) {
-			return;
-		}
-
-		var dlg = new go.modules.tutorial.music.ArtistDialog();
-		dlg.load(record.id).show();
-
 	}
-
 });

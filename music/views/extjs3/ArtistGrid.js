@@ -49,9 +49,9 @@ go.modules.tutorial.music.ArtistGrid = Ext.extend(go.grid.GridPanel, {
 						var style = record.data.photo ? 'background-image: url(' + go.Jmap.downloadUrl(record.data.photo) + ')"' : '';
 
 						return '<div class="user">\
-										<div class="avatar" style="' + style + '"></div>\
-										<div class="wrap single">' + record.get('name') + '</div>\
-						</div>';
+                                <div class="avatar" style="' + style + '"></div>\
+                                <div class="wrap single">' + record.get('name') + '</div>\
+                                </div>';
 					}
 				},
 				{

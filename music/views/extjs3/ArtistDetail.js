@@ -29,7 +29,7 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 					xtype: "box",
 					cls: "content",
 					tpl: new Ext.XTemplate('<div class="go-detail-view-avatar">\
-<div class="avatar" style="{[this.getStyle(values.photo)]}"></div></div>',
+						<div class="avatar" style="width:120px;height:120px;{[this.getStyle(values.photo)]}"></div></div>',
 						{
 							getCls: function (isOrganization) {
 								return isOrganization ? "organization" : "";
@@ -46,13 +46,13 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 					title: t("Albums"),
 					xtype: "panel",
 					tpl: '<div class="icons">\
-						<tpl for="albums">\
-									<p class="s6"><tpl if="xindex == 1"><i class="icon label">album</i></tpl>\
-													<span>{name}</span>\
-													<label>{[go.util.Format.date(values.releaseDate)]} - <tpl for="genre">{name}</tpl></label>\
-									</p>\
-					</tpl>\
-					</div>'
+                          <tpl for="albums">\
+                          <p class="s6"><tpl if="xindex == 1"><i class="icon label">album</i></tpl>\
+                          <span>{name}</span>\
+                          <label>{[go.util.Format.date(values.releaseDate)]} - <tpl for="genre">{name}</tpl></label>\
+                          </p>\
+                          </tpl>\
+                          </div>'
 				}
 			]
 		});
@@ -96,7 +96,7 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 						iconCls: "ic-print",
 						text: t("Print"),
 						handler: function () {
-							this.body.print({ title: this.data.name });
+							this.body.print({title: this.data.name});
 						},
 						scope: this
 					},
@@ -110,7 +110,7 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 								if (btn != "yes") {
 									return;
 								}
-								this.entityStore.set({ destroy: [this.currentId] });
+								this.entityStore.set({destroy: [this.currentId]});
 							}, this);
 						},
 						scope: this

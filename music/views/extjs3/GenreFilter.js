@@ -7,8 +7,6 @@ go.modules.tutorial.music.GenreFilter = Ext.extend(go.grid.GridPanel, {
 	//This component is going to be the side navigation
 	cls: 'go-sidenav',
 
-	hideHeaders: true,
-
 	initComponent: function () {
 
 		// Row actions is a special grid column with an actions menu in it.
@@ -78,8 +76,8 @@ go.modules.tutorial.music.GenreFilter = Ext.extend(go.grid.GridPanel, {
 			keepSelection: true,
 
 			actions: [{
-					iconCls: 'ic-more-vert'
-				}]
+				iconCls: 'ic-more-vert'
+			}]
 		});
 
 		actions.on({
@@ -92,6 +90,7 @@ go.modules.tutorial.music.GenreFilter = Ext.extend(go.grid.GridPanel, {
 		return actions;
 
 	},
+
 
 	showMoreMenu: function (record, e) {
 		if (!this.moreMenu) {
@@ -117,7 +116,7 @@ go.modules.tutorial.music.GenreFilter = Ext.extend(go.grid.GridPanel, {
 								if (btn != "yes") {
 									return;
 								}
-								go.Db.store("Genre").set({destroy: [this.moreMenu.record.id]});
+								go.Stores.get("Genre").set({destroy: [this.moreMenu.record.id]});
 							}, this);
 						},
 						scope: this
@@ -126,8 +125,8 @@ go.modules.tutorial.music.GenreFilter = Ext.extend(go.grid.GridPanel, {
 			})
 		}
 
-		this.moreMenu.getComponent("edit").setDisabled(record.get("permissionLevel") < go.permissionLevels.manage);
-		this.moreMenu.getComponent("delete").setDisabled(record.get("permissionLevel") < go.permissionLevels.manage);
+		this.moreMenu.getComponent("edit").setDisabled(record.get("permissionLevel") < GO.permissionLevels.manage);
+		this.moreMenu.getComponent("delete").setDisabled(record.get("permissionLevel") < GO.permissionLevels.manage);
 
 		this.moreMenu.record = record;
 
