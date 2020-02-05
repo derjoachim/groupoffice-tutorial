@@ -10,35 +10,77 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 
 	initComponent: function () {
 
-		//create the genre filter component
-		this.genreFilter = new go.modules.tutorial.music.GenreFilter({
-			region: "west",
-			width: dp(300),
+		this.createArtistGrid();
 
-			//render a split bar for resizing
-			split: true,
+		// Every entity automatically configures a route. Route to the entity when selecting it in the grid.
+		this.artistGrid.on('navigate', function (grid, rowIndex, record) {
+			go.Router.goto("artist/" + record.id);
+		}, this);
 
-			tbar: [{
-				xtype: "tbtitle",
-				text: t("Genres")
+		this.sidePanel = new Ext.Panel({
+			layout: 'anchor',
+			defaults: {
+				anchor: '100%'
 			},
-				'->',
-
-				//add back button for smaller screens
+			width: dp(300),
+			cls: 'go-sidenav',
+			region: "west",
+			split: true,
+			autoScroll: true,
+			items: [
+				this.createGenreFilter(),
+				this.createFilterPanel()
+			]
+		});
+		// Create artist detail component
+		this.artistDetail = new go.modules.tutorial.music.ArtistDetail({
+			region: "center",
+			tbar: [
+				//add a back button for small screens
 				{
-					//this class will hide it on larger screens
+					// this class will hide the button on large screens
 					cls: 'go-narrow',
-					iconCls: "ic-arrow-forward",
-					tooltip: t("Artists"),
+					iconCls: "ic-arrow-back",
 					handler: function () {
-						this.artistGrid.show();
+						this.westPanel.show();
 					},
 					scope: this
-				}
+				}]
+		});
+
+		//Wrap the grids into another panel with responsive layout for the 3 column responsive layout to work.
+		this.westPanel = new Ext.Panel({
+			region: "west",
+			layout: "responsive",
+			stateId: "go-music-west",
+			split: true,
+			width: dp(800),
+			narrowWidth: dp(500), //this will only work for panels inside another panel with layout=responsive. Not ideal but at the moment the only way I could make it work
+			items: [
+				this.artistGrid, //first item is shown as default in narrow mode.
+				this.sidePanel
 			]
 		});
 
-		//Create the artist grid
+		//add the components to the main panel's items.
+		this.items = [
+			this.westPanel, //first is default in narrow mode
+			this.artistDetail
+		];
+
+		// Call the parent class' initComponent
+		go.modules.tutorial.music.MainPanel.superclass.initComponent.call(this);
+
+		//Attach lister to changes of the filter selection.
+		//add buffer because it clears selection first and this would cause it to fire twice
+		this.genreFilter.getSelectionModel().on('selectionchange', this.onGenreFilterChange, this, {buffer: 1});
+
+		// Attach listener for running the module
+		this.on("afterrender", this.runModule, this);
+	},
+
+
+	createArtistGrid: function() {
 		this.artistGrid = new go.modules.tutorial.music.ArtistGrid({
 			region: "center",
 
@@ -94,57 +136,7 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 				scope: this
 			}
 		});
-
-		// Every entity automatically configures a route. Route to the entity when selecting it in the grid.
-		this.artistGrid.on('navigate', function (grid, rowIndex, record) {
-			go.Router.goto("artist/" + record.id);
-		}, this);
-
-		// Create artist detail component
-		this.artistDetail = new go.modules.tutorial.music.ArtistDetail({
-			region: "center",
-			tbar: [
-				//add a back button for small screens
-				{
-					// this class will hide the button on large screens
-					cls: 'go-narrow',
-					iconCls: "ic-arrow-back",
-					handler: function () {
-						this.westPanel.show();
-					},
-					scope: this
-				}]
-		});
-
-		//Wrap the grids into another panel with responsive layout for the 3 column responsive layout to work.
-		this.westPanel = new Ext.Panel({
-			region: "west",
-			layout: "responsive",
-			stateId: "go-music-west",
-			split: true,
-			width: dp(800),
-			narrowWidth: dp(500), //this will only work for panels inside another panel with layout=responsive. Not ideal but at the moment the only way I could make it work
-			items: [
-				this.artistGrid, //first item is shown as default in narrow mode.
-				this.genreFilter
-			]
-		});
-
-		//add the components to the main panel's items.
-		this.items = [
-			this.westPanel, //first is default in narrow mode
-			this.artistDetail
-		];
-
-		// Call the parent class' initComponent
-		go.modules.tutorial.music.MainPanel.superclass.initComponent.call(this);
-
-		//Attach lister to changes of the filter selection.
-		//add buffer because it clears selection first and this would cause it to fire twice
-		this.genreFilter.getSelectionModel().on('selectionchange', this.onGenreFilterChange, this, {buffer: 1});
-
-		// Attach listener for running the module
-		this.on("afterrender", this.runModule, this);
+		return this.artistGrid;
 	},
 
 	// Fired when the Genre filter selection changes
@@ -155,6 +147,67 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 
 		this.artistGrid.store.setFilter('genres', {genres: ids});
 		this.artistGrid.store.load();
+	},
+
+	createGenreFilter: function() {
+		this.genreFilter = new go.modules.tutorial.music.GenreFilter({
+			region: "west",
+			width: dp(300),
+			autoHeight: true,
+
+			//render a split bar for resizing
+			split: true,
+
+			tbar: [{
+				xtype: "tbtitle",
+				text: t("Genres")
+			},
+				'->',
+
+				//add back button for smaller screens
+				{
+					//this class will hide it on larger screens
+					cls: 'go-narrow',
+					iconCls: "ic-arrow-forward",
+					tooltip: t("Artists"),
+					handler: function () {
+						this.artistGrid.show();
+					},
+					scope: this
+				}
+			]
+		});
+		return this.genreFilter;
+	},
+
+	createFilterPanel: function() {
+		return new Ext.Panel({
+			autoHeight: true,
+			tbar: [
+				{
+					xtype: 'tbtitle',
+					text: t("Filters")
+				},
+				'->',
+				{
+					xtype: "button",
+					iconCls: "ic-add",
+					handler: function() {
+						var dlg = new go.filter.FilterDialog({
+							entity: "Artist"
+						});
+						dlg.show();
+					},
+					scope: this
+				}
+			],
+			items: [
+				this.filterGrid = new go.filter.FilterGrid({
+					filterStore: this.artistGrid.store,
+					entity: "Artist"
+				})
+			]
+		});
 	},
 
 	// Fired when the module panel is rendered.

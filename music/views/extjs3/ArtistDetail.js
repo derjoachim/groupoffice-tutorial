@@ -59,6 +59,9 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 
 		go.modules.tutorial.music.ArtistDetail.superclass.initComponent.call(this);
 
+		this.addCustomFields();
+		// this.add(new go.detail.CreateModifyPanel());
+
 	},
 
 	onLoad: function () {

@@ -19,6 +19,11 @@ go.Modules.register("tutorial", "music", {
                 }
             }
         }
+        // },
+        // {
+        //     name: "Albums",
+        //     relations: {store: "Genre", fk: "genreId"}
+        // }
     ],
 
     //Put code to initialize the module here after the user is authenticated

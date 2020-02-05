@@ -4,9 +4,6 @@ go.modules.tutorial.music.GenreFilter = Ext.extend(go.grid.GridPanel, {
 		autoFill: true
 	},
 
-	//This component is going to be the side navigation
-	cls: 'go-sidenav',
-
 	initComponent: function () {
 
 		// Row actions is a special grid column with an actions menu in it.
