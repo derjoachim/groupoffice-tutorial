@@ -29,11 +29,8 @@ go.modules.tutorial.music.ArtistDetail = Ext.extend(go.detail.Panel, {
 					xtype: "box",
 					cls: "content",
 					tpl: new Ext.XTemplate('<div class="go-detail-view-avatar">\
-						<div class="avatar" style="width:120px;height:120px;{[this.getStyle(values.photo)]}"></div></div>',
+						<div class="avatar" style="{[this.getStyle(values.photo)]}"></div></div>',
 						{
-							getCls: function (isOrganization) {
-								return isOrganization ? "organization" : "";
-							},
 							getStyle: function (photoBlobId) {
 								return photoBlobId ? 'background-image: url(' + go.Jmap.downloadUrl(photoBlobId) + ')"' : "";
 							}

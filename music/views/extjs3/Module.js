@@ -21,7 +21,7 @@ go.Modules.register("tutorial", "music", {
         }
         // },
         // {
-        //     name: "Albums",
+        //     name: "Album",
         //     relations: {store: "Genre", fk: "genreId"}
         // }
     ],

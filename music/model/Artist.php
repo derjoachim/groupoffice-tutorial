@@ -1,6 +1,7 @@
 <?php
 namespace go\modules\tutorial\music\model;
-						
+
+//use go\core\orm\Query;
 use go\core\jmap\Entity;
 use go\core\orm\CustomFieldsTrait;
 
@@ -35,8 +36,11 @@ class Artist extends Entity {
 	/** @var int  */							
 	public $modifiedBy;
 	
-	/** @var Album[] */
+	/** @var array */
 	public $albums;
+
+	/** @var int */
+	protected $albumcount;
 
 	protected static function defineMapping() {
 		return parent::defineMapping()
@@ -70,4 +74,15 @@ class Artist extends Entity {
 				}
 			});
 	}
+
+	/**
+	 * The album count is simply the number of albums as per the artist-album relation
+	 *
+	 * @return int
+	 */
+	public function getAlbumcount() :int
+	{
+		return count($this->albums);
+	}
+
 }

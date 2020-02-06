@@ -18,7 +18,8 @@ go.modules.tutorial.music.ArtistGrid = Ext.extend(go.grid.GridPanel, {
 
 				// Every entity has permission levels. go.permissionLevels.read, write,
 				// writeAndDelete and manage
-				'permissionLevel'
+				'permissionLevel',
+				'albumcount'
 			],
 
 			// The connected entity store. When Artists are changed the store will
@@ -53,6 +54,13 @@ go.modules.tutorial.music.ArtistGrid = Ext.extend(go.grid.GridPanel, {
                                 <div class="wrap single">' + record.get('name') + '</div>\
                                 </div>';
 					}
+				},
+				{
+					id: 'albumcount',
+					sortable: false,
+					header: t('album_count','music','tutorial'),
+					dataIndex: 'albumcount',
+					width: dp(80)
 				},
 				{
 					xtype: "datecolumn",
