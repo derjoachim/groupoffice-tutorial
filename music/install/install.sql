@@ -3,26 +3,20 @@ SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 --
 -- Table structure for table `music_album`
 --
 
-CREATE TABLE `music_album` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `music_album` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `artistId` int(11) NOT NULL,
   `name` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
   `releaseDate` date NOT NULL,
-  `genreId` int(11) NOT NULL
+  `genreId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `artistId` (`artistId`),
+  KEY `genreId` (`genreId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `music_album`
---
-
-INSERT INTO `music_album` (`id`, `artistId`, `name`, `releaseDate`, `genreId`) VALUES
-(1, 3, 'The Doors', '1967-01-04', 2),
-(1, 3, 'Strange Days', '1967-09-25', 2);
 
 -- --------------------------------------------------------
 
@@ -30,22 +24,30 @@ INSERT INTO `music_album` (`id`, `artistId`, `name`, `releaseDate`, `genreId`) V
 -- Table structure for table `music_artist`
 --
 
-CREATE TABLE `music_artist` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `music_artist` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
   `photo` binary(40) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `modifiedAt` datetime NOT NULL,
   `createdBy` int(11) NOT NULL,
-  `modifiedBy` int(11) NOT NULL
+  `modifiedBy` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `photo` (`photo`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `music_artist`
+-- Table structure for table `music_artist_custom_fields`
 --
 
-INSERT INTO `music_artist` (`id`, `name`, `photo`, `createdAt`, `modifiedAt`, `createdBy`, `modifiedBy`) VALUES
-(1, 'The Doors', NULL, '2020-02-03 13:05:25', '2020-02-03 13:05:25', 1, 1);
+CREATE TABLE IF NOT EXISTS `music_artist_custom_fields` (
+  `id` int(11) NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT 1,
+  `bio` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -53,45 +55,31 @@ INSERT INTO `music_artist` (`id`, `name`, `photo`, `createdAt`, `modifiedAt`, `c
 -- Table structure for table `music_genre`
 --
 
-CREATE TABLE `music_genre` (
-  `id` int(11) NOT NULL,
-  `name` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL
+CREATE TABLE IF NOT EXISTS `music_genre` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `music_genre`
---
-
-INSERT INTO `music_genre` (`id`, `name`) VALUES
-(1, 'Pop'),
-(2, 'Rock'),
-(3, 'Blues'),
-(4, 'Jazz');
+-- --------------------------------------------------------
 
 --
--- Indexes for dumped tables
+-- Table structure for table `music_review`
 --
 
---
--- Indexes for table `music_album`
---
-ALTER TABLE `music_album`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `artistId` (`artistId`),
-  ADD KEY `genreId` (`genreId`);
-
---
--- Indexes for table `music_artist`
---
-ALTER TABLE `music_artist`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `photo` (`photo`);
-
---
--- Indexes for table `music_genre`
---
-ALTER TABLE `music_genre`
-  ADD PRIMARY KEY (`id`);
+CREATE TABLE IF NOT EXISTS `music_review` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `albumId` int(11) NOT NULL,
+  `aclId` int(11) NOT NULL,
+  `createdBy` int(11) NOT NULL,
+  `modifiedBy` int(11) NOT NULL,
+  `rating` smallint(5) UNSIGNED NOT NULL,
+  `title` varchar(190) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `body` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `aclId` (`aclId`),
+  KEY `albumId` (`albumId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Constraints for dumped tables
@@ -109,4 +97,40 @@ ALTER TABLE `music_album`
 --
 ALTER TABLE `music_artist`
   ADD CONSTRAINT `music_artist_ibfk_1` FOREIGN KEY (`photo`) REFERENCES `core_blob` (`id`);
+
+--
+-- Constraints for table `music_artist_custom_fields`
+--
+ALTER TABLE `music_artist_custom_fields`
+  ADD CONSTRAINT `music_artist_custom_fields_ibfk_1` FOREIGN KEY (`id`) REFERENCES `music_artist` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `music_review`
+--
+ALTER TABLE `music_review`
+  ADD CONSTRAINT `music_review_fk1` FOREIGN KEY (`albumId`) REFERENCES `music_album` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `music_review_fk2` FOREIGN KEY (`aclId`) REFERENCES `core_acl` (`id`);
 COMMIT;
+
+--
+-- Dumping data for table `music_artist`
+--
+
+--
+-- Dumping data for table `music_genre`
+--
+
+INSERT INTO `music_genre` (`id`, `name`) VALUES
+(1, 'Pop'),
+(2, 'Rock'),
+(3, 'Blues'),
+(4, 'Jazz');
+
+
+--
+-- Dumping data for table `music_album`
+--
+
+INSERT INTO `music_album` (`id`, `artistId`, `name`, `releaseDate`, `genreId`) VALUES
+(1, 3, 'The Doors', '1967-01-04', 2),
+(1, 3, 'Strange Days', '1967-09-25', 2);

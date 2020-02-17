@@ -33,12 +33,12 @@ class Review extends AclOwnerEntity
 		return parent::defineMapping()
 			->addTable('music_review')
 			->setQuery((new Query())->select('a.name AS albumtitle')
-				->join('music_album', 'a','a.id=music_review.albumId'));
+				->join('music_album', 'a', 'a.id=music_review.albumId'));
 	}
 
 	protected function internalSave()
 	{
-		if($this->isNew()) {
+		if ($this->isNew()) {
 			$this->albumtitle = go()->getDbConnection()
 				->selectSingleValue('name')
 				->from('music_album')
@@ -71,7 +71,8 @@ class Review extends AclOwnerEntity
 	 * @param array $albumIds
 	 * @throws Exception
 	 */
-	private static function changeArtist(array $albumIds) {
+	private static function changeArtist(array $albumIds)
+	{
 		Artist::entityType()->changes(
 			go()->getDbConnection()
 				->select('art.id, null, 0')

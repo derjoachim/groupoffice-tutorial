@@ -36,7 +36,7 @@ class Artist extends Entity {
 	public $reviews;
 
 	/** @var int */
-	protected $albumcount;
+	protected $albumCount;
 
 	protected static function defineMapping() {
 		return parent::defineMapping()
@@ -76,7 +76,7 @@ class Artist extends Entity {
 	 *
 	 * @return int
 	 */
-	public function getAlbumcount() :int
+	public function getAlbumCount() :int
 	{
 		return count($this->albums);
 	}
