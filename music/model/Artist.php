@@ -5,13 +5,6 @@ namespace go\modules\tutorial\music\model;
 use go\core\jmap\Entity;
 use go\core\orm\CustomFieldsTrait;
 
-/**
- * Artist model
- *
- * @copyright (c) 2020, Intermesh BV http://www.intermesh.nl
- * @author Merijn Schering <mschering@intermesh.nl>
- * @license http://www.gnu.org/licenses/agpl-3.0.html AGPLv3
- */
 class Artist extends Entity {
 	use CustomFieldsTrait;
 
@@ -39,13 +32,16 @@ class Artist extends Entity {
 	/** @var array */
 	public $albums;
 
+	/** @var array */
+	public $reviews;
+
 	/** @var int */
 	protected $albumcount;
 
 	protected static function defineMapping() {
 		return parent::defineMapping()
-						->addTable("music_artist", "artist")
-						->addArray('albums', Album::class, ['id' => 'artistId']);
+						->addTable('music_artist', 'artist')
+						->addMap('albums', Album::class, ['id' => 'artistId']);
 	}
 
 	/**
@@ -84,5 +80,4 @@ class Artist extends Entity {
 	{
 		return count($this->albums);
 	}
-
 }

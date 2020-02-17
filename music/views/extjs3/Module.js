@@ -13,17 +13,20 @@ go.Modules.register("tutorial", "music", {
                 creator: {store: "User", fk: "createdBy"},
                 modifier: {store: "User", fk: "createdBy"},
 
-                // 'albums' is a property of artist and has a nested relation.
+                // 'albums' is a property of artist and has nested relations.
                 albums: {
+                    type: go.Relations.TYPE_MAP,
                     genre: {store: "Genre", fk: "genreId"}
                 }
             }
+        },
+        {
+            name: "Review",
+            relations: {
+                creator: {store: "User", fk:"createdBy"},
+                modifier: {store: "User", fk: "modifiedBy"}
+            }
         }
-        // },
-        // {
-        //     name: "Album",
-        //     relations: {store: "Genre", fk: "genreId"}
-        // }
     ],
 
     //Put code to initialize the module here after the user is authenticated

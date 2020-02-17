@@ -41,6 +41,7 @@ go.modules.tutorial.music.ArtistDialog = Ext.extend(go.form.Dialog, {
 						xtype: "formgroup",
 						name: "albums",
 						hideLabel: true,
+						mapKey: 'id',
 
 						// this will add dp(16) padding between rows.
 						pad: true,
@@ -52,6 +53,9 @@ go.modules.tutorial.music.ArtistDialog = Ext.extend(go.form.Dialog, {
 								anchor: "100%"
 							},
 							items: [{
+								xtype: "hidden",
+								name: "id"
+							}, {
 								xtype: "textfield",
 								fieldLabel: t("Name"),
 								name: "name"

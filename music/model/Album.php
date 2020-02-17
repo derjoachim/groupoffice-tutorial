@@ -2,7 +2,6 @@
 namespace go\modules\tutorial\music\model;
 						
 use go\core\orm\Property;
-//use go\core\orm\CustomFieldsTrait;
 
 /**
  * Album model
@@ -12,8 +11,7 @@ use go\core\orm\Property;
  * @license http://www.gnu.org/licenses/agpl-3.0.html AGPLv3
  */
 class Album extends Property {
-//	use CustomFieldsTrait;
-	/** @var int  */							
+	/** @var int  */
 	public $id;
 
 	/** @var int  */							
@@ -30,7 +28,7 @@ class Album extends Property {
 
 	protected static function defineMapping() {
 		return parent::defineMapping()
-						->addTable("music_album", "album");
+			->addTable('music_album', 'album')
+			->addScalar('reviews', 'music_review', ['id' => 'albumId']);
 	}
-
 }

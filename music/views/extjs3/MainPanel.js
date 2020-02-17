@@ -29,7 +29,7 @@ go.modules.tutorial.music.MainPanel = Ext.extend(go.modules.ModulePanel, {
 			autoScroll: true,
 			items: [
 				this.createGenreFilter(),
-				this.createFilterPanel()
+				this.createFilterPanel(),
 			]
 		});
 		// Create artist detail component
