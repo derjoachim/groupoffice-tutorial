@@ -1,17 +1,19 @@
 <?php
 namespace go\modules\tutorial\music\model;
 						
+use go\core\orm\Mapping;
 use go\core\orm\Property;
 						
 /**
  * Album model
  *
- * @copyright (c) 2019, Intermesh BV http://www.intermesh.nl
+ * @copyright (c) 2019-2024, Intermesh BV http://www.intermesh.nl
  * @author Merijn Schering <mschering@intermesh.nl>
+ * @author Joachim van de Haterd <jvdhaterd@intermesh.nl>
  * @license http://www.gnu.org/licenses/agpl-3.0.html AGPLv3
  */
 
-class Album extends Property {
+final class Album extends Property {
 	
 	/**
 	 * 
@@ -43,9 +45,9 @@ class Album extends Property {
 	 */							
 	public $genreId;
 
-	protected static function defineMapping() {
+	protected static function defineMapping(): Mapping {
 		return parent::defineMapping()
-						->addTable("music_album", "album");
+						->addTable("tutorial_music_album", "album");
 	}
 
 }
