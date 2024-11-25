@@ -1,32 +1,26 @@
 <?php
 
+
 namespace go\modules\tutorial\music\controller;
 
 use Exception;
 use go\core\jmap\EntityController;
-use go\core\jmap\exception\InvalidArguments;
 use go\core\util\ArrayObject;
-use go\core\jmap\exception\StateMismatch;
 use go\modules\tutorial\music\model;
+use go\core\jmap\exception\InvalidArguments;
+use go\core\jmap\exception\StateMismatch;
 
-/**
- * The controller for the Artist entity
- *
- * @copyright (c) 2019-2024, Intermesh BV https://www.intermesh.nl
- * @author Merijn Schering <mschering@intermesh.nl>
- * @author Joachim van de Haterd <jvdhaterd@intermesh.nl>
- * @license http://www.gnu.org/licenses/agpl-3.0.html AGPLv3
- */
-final class Artist extends EntityController
+final class Review extends EntityController
 {
 
 	/**
 	 * The class name of the entity this controller is for.
 	 *
+	 * @return model\Review::class
 	 */
 	protected function entityClass(): string
 	{
-		return model\Artist::class;
+		return model\Review::class;
 	}
 
 	/**
@@ -47,8 +41,7 @@ final class Artist extends EntityController
 	 *
 	 * @param array $params
 	 * @return ArrayObject
-	 * @throws Exception
-	 * @throws InvalidArguments
+	 * @throws InvalidArguments|Exception
 	 * @see https://jmap.io/spec-core.html#/get
 	 */
 	public function get(array $params): ArrayObject
@@ -70,10 +63,8 @@ final class Artist extends EntityController
 		return $this->defaultSet($params);
 	}
 
-
 	/**
 	 * Handles the Artist entity's Artist/changes command
-	 *
 	 * @param array $params
 	 * @return ArrayObject
 	 * @throws InvalidArguments
@@ -84,4 +75,3 @@ final class Artist extends EntityController
 		return $this->defaultChanges($params);
 	}
 }
-

@@ -2,9 +2,11 @@
 
 namespace go\modules\tutorial\music\controller;
 
+use go\core\jmap\Entity;
 use go\core\jmap\EntityController;
 use go\core\jmap\exception\InvalidArguments;
 use go\core\util\ArrayObject;
+use go\core\jmap\exception\StateMismatch;
 use go\modules\tutorial\music\model;
 
 /**
@@ -20,7 +22,6 @@ final class Genre extends EntityController
 
 	/**
 	 * The class name of the entity this controller is for.
-	 *
 	 * @return string
 	 */
 	protected function entityClass(): string
@@ -60,6 +61,9 @@ final class Genre extends EntityController
 	 * @see https://jmap.io/spec-core.html#/set
 	 * @return ArrayObject
 	 * @param array $params
+	 * @return array
+	 * @throws StateMismatch
+	 * @throws InvalidArguments
 	 */
 	public function set(array $params): ArrayObject
 	{

@@ -1,7 +1,7 @@
 <?php
 
 namespace go\modules\tutorial\music\model;
-
+						
 use go\core\jmap\Entity;
 use go\core\orm\Mapping;
 
@@ -20,13 +20,13 @@ final class Genre extends Entity
 	 *
 	 * @var int
 	 */
-	public $id;
+	public int $id;
 
 	/**
 	 *
 	 * @var string
 	 */
-	public $name;
+	public string $name;
 
 	protected static function defineMapping(): Mapping
 	{

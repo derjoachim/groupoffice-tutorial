@@ -3,7 +3,7 @@ namespace go\modules\tutorial\music\model;
 						
 use go\core\orm\Mapping;
 use go\core\orm\Property;
-						
+
 /**
  * Album model
  *
@@ -19,35 +19,23 @@ final class Album extends Property {
 	 * 
 	 * @var int
 	 */							
-	public $id;
+	public int $id;
 
-	/**
-	 * 
-	 * @var int
-	 */							
-	public $artistId;
+	/** @var int  */							
+	public int $artistId;
 
-	/**
-	 * 
-	 * @var string
-	 */							
-	public $name;
+	/** @var string  */							
+	public string $name;
 
-	/**
-	 * 
-	 * @var \go\core\util\DateTime
-	 */							
-	public $releaseDate;
+	/** @var \go\core\util\DateTime  */							
+	public \go\core\util\DateTime $releaseDate;
 
-	/**
-	 * 
-	 * @var int
-	 */							
-	public $genreId;
+	/** @var int  */							
+	public int $genreId;
 
 	protected static function defineMapping(): Mapping {
 		return parent::defineMapping()
-						->addTable("tutorial_music_album", "album");
+			->addTable("tutorial_music_album", "album")
+			->addScalar('reviews', 'tutorial_music_review', ['id' => 'albumId']);
 	}
-
 }

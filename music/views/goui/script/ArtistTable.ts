@@ -51,7 +51,15 @@ export class ArtistTable extends Table<DataSourceStore> {
 				resizable: true,
 				sortable: true
 			}),
-
+			column({
+				width: 80,
+				resizable: false,
+				id: "active",
+				header: t("Active"),
+				renderer: (v, record) => {
+					return comp({cls: "icon", html: v ? "check": "cancel"});
+				}
+			})
 		];
 
 		super(store, columns);

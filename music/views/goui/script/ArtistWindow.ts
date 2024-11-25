@@ -1,8 +1,7 @@
-import {Component, comp, fieldset, t, textfield} from "@intermesh/goui";
+import {Component, checkbox, comp, fieldset, t, textarea, textfield} from "@intermesh/goui";
 import {FormWindow, router} from "@intermesh/groupoffice-core";
 
 export class ArtistWindow extends FormWindow {
-	private avatarComp: Component;
 	constructor() {
 		super("Artist");
 
@@ -13,11 +12,6 @@ export class ArtistWindow extends FormWindow {
 		this.resizable = true;
 		this.width = 640;
 
-		this.form.on('beforesave', (form, data) => {
-			debugger;
-
-		});
-
 		this.form.on("save", (form, data, isNew) => {
 			if (isNew) {
 				router.goto("artist/" + data.id);
@@ -26,22 +20,22 @@ export class ArtistWindow extends FormWindow {
 
 		this.generalTab.items.add(
 			fieldset({},
-
 				textfield({
 					name: "name",
 					label: t("Name"),
 					required: true
 				}),
-				comp({
-				}, this.avatarComp = new go.form.ImageField({
-					name: "photo"
-				}))
+				checkbox({
+					name: "active",
+					label: t("Active"),
+					type: "switch"
+				}),
+				textarea({
+					name: "bio",
+					label: t("Biography")
+				})
 			)
 		)
-
-		// this.addCustomFields();
-
+		this.addCustomFields();
 	}
-
-
 }

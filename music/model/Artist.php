@@ -1,8 +1,9 @@
 <?php
-
 namespace go\modules\tutorial\music\model;
 
+//use go\core\orm\Query;
 use go\core\jmap\Entity;
+use go\core\orm\CustomFieldsTrait;
 use go\core\orm\Filters;
 use go\core\orm\Mapping;
 use go\core\util\DateTime;
@@ -17,55 +18,59 @@ use go\core\util\DateTime;
  */
 final class Artist extends Entity
 {
+	use CustomFieldsTrait;
 
 	/**
 	 *
 	 * @var int
 	 */
-	public $id;
+	public int $id;
 
 	/**
 	 *
 	 * @var string
 	 */
-	public $name;
+	public string $name;
 
 	/**
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	public $photo;
-
-	/**
-	 *
-	 * @var DateTime
-	 */
-	public $createdAt;
+	public ?string $photo;
 
 	/**
 	 *
 	 * @var DateTime
 	 */
-	public $modifiedAt;
+	public DateTime $createdAt;
+
+	/**
+	 *
+	 * @var DateTime
+	 */
+	public DateTime $modifiedAt;
 
 	/**
 	 *
 	 * @var int
 	 */
-	public $createdBy;
+	public int $createdBy;
 
-	/**
-	 *
-	 * @var int
-	 */
-	public $modifiedBy;
 
-	/**
-	 * The albums created by the artist
-	 *
-	 * @var Album[]
-	 */
-	public $albums;
+	/** @var int  */							
+	public int $modifiedBy;
+	
+	/** @var array */
+	public array $albums;
+
+	public array $reviews;
+
+	/** @var int */
+	protected int $albumCount;
+
+	public bool $active = true;
+
+	public string $bio = "";
 
 	protected static function defineMapping(): Mapping
 	{
@@ -103,4 +108,13 @@ final class Artist extends Entity
 			});
 	}
 
+	/**
+	 * The album count is simply the number of albums as per the artist-album relation
+	 *
+	 * @return int
+	 */
+	public function getAlbumCount() :int
+	{
+		return count($this->albums);
+	}
 }
