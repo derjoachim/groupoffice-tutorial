@@ -63,10 +63,10 @@ final class Artist extends Entity
 	/** @var array */
 	public array $albums;
 
-	public array $reviews;
+//	public array $reviews;
 
 	/** @var int */
-	protected int $albumCount;
+//	protected int $albumCount;
 
 	public bool $active = true;
 
@@ -76,7 +76,7 @@ final class Artist extends Entity
 	{
 		return parent::defineMapping()
 			->addTable("tutorial_music_artist", "artist")
-			->addArray('albums', Album::class, ['id' => 'artistId']);
+			->addArray('albums', Album::class, ['id' => 'artistId'], ['orderBy' => 'releaseDate']);
 	}
 
 	/**
@@ -108,13 +108,18 @@ final class Artist extends Entity
 			});
 	}
 
+//	protected function getReviews() : array
+//	{
+//		return $this->reviews;
+//	}
+
 	/**
 	 * The album count is simply the number of albums as per the artist-album relation
 	 *
 	 * @return int
 	 */
-	public function getAlbumCount() :int
-	{
-		return count($this->albums);
-	}
+//	public function getAlbumCount() :int
+//	{
+//		return count($this->albums);
+//	}
 }

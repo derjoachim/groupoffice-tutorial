@@ -14,8 +14,9 @@ import {
 	table,
 	Table,
 	tbar,
-    menu,
-    hr
+	menu,
+	hr,
+	displayfield
 } from "@intermesh/goui";
 import {DetailPanel, img, jmapds, router} from "@intermesh/groupoffice-core";
 import {ArtistWindow} from "./ArtistWindow.js";
@@ -41,85 +42,106 @@ export class ArtistDetail extends DetailPanel<Artist> {
 					tbar({},
 						this.titleCmp = comp({tagName: "h3", flex: 1}),
 					),
-					comp({cls: "hflow", flex: 1},
+					comp({cls: "hbox", flex: 1},
 						this.avatarContainer = comp({
 							cls: "go-detail-view-avatar pad",
 							itemId: "avatar-container"
 						}),
 					),
-				)
+					comp({cls: "pad flow"},
+						fieldset({},
+							comp({cls: "vbox", flex: 1},
+								displayfield({
+									icon: "person_alert",
+									name: "active",
+									label: t("Active"),
+									renderer: (v) => {
+										return v ? t("Yes") : t("No");
+									}
+								}),
+								displayfield({
+									icon: "book",
+									name: "bio",
+									label: t("Biography"),
+								})
+							),
+						),
+					),
+				),
 			),
 
 			fieldset({legend: t("Albums")},
-				tbar({}, "->", btn({icon: "add", cls: "primary", text: t("Add"), handler:() => {
-					// TODO
-					// const w = new AlbumWindow();
-					// w.on("close", async () => {
-					// 	this.load(this.entity!.id)
-					// });
-					// w.show();
-				}})),
-			this.albumsTable = table({
-				fitParent: true,
-				// headers: false,
-				store: store({
-					data: []
-				}),
-				columns: [
-					column({
-						id: "id",
-						hidden: true,
+				tbar({}, "->", btn({
+					icon: "add", cls: "primary", text: t("Add"), handler: () => {
+						// TODO
+						// const w = new AlbumWindow();
+						// w.on("close", async () => {
+						// 	this.load(this.entity!.id)
+						// });
+						// w.show();
+					}
+				})),
+				this.albumsTable = table({
+					fitParent: true,
+					// headers: false,
+					store: store({
+						data: []
 					}),
-					column({
-						id: "name",
-						header: t("Title"),
-						resizable: true,
-						sortable: true
-					}),
-					datecolumn({
-						id: "releaseDate",
-						header: t("Release date"),
-						sortable: true
-					}),
-					column({
-						resizable: true,
-						id: "genreId",
-						header: t("Genre"),
-						renderer: async (v) => {
-							const g = await jmapds("Genre").single(v);
-							return g!.name;
-						}
-					}),
-					column({
-						resizable: false,
-						// sticky: true,
-						width: 32,
-						id: "btn",
-						renderer: (columnValue: any, record, td, table, rowIndex) => {
+					columns: [
+						column({
+							id: "id",
+							hidden: true,
+						}),
+						column({
+							id: "name",
+							header: t("Title"),
+							resizable: true,
+							sortable: true
+						}),
+						datecolumn({
+							id: "releaseDate",
+							header: t("Release date"),
+							sortable: true
+						}),
+						column({
+							resizable: true,
+							id: "genreId",
+							header: t("Genre"),
+							renderer: async (v) => {
+								const g = await jmapds("Genre").single(v);
+								return g!.name;
+							}
+						}),
+						column({
+							resizable: false,
+							// sticky: true,
+							width: 32,
+							id: "btn",
+							renderer: (columnValue: any, record, td, table, rowIndex) => {
 
-							return btn({
-								icon: "more_vert", menu: menu({}, btn({
-									icon: "edit", text: t("Edit"), handler: async (_btn) => {
-										// TODO...
-										// const dlg = new go.modules.community.tasks.AlbumDialog({
-										// 	redirectOnSave: false
-										// });
-										//
-										// const album = table.store.get(rowIndex)!;
-										//
-										// dlg.load(album.id);
-										// dlg.show();
-									}
-								}), hr(), btn({
-									icon: "delete", text: t("Delete"), handler: async (btn) => {
-										// TODO...
-									}
-								}))
-							})
-						}
-					})
-				]
-			})
+								return btn({
+									icon: "more_vert", menu: menu({}, btn({
+										icon: "edit", text: t("Edit"), handler: async (_btn) => {
+											// TODO...
+											// const dlg = new go.modules.community.tasks.AlbumDialog({
+											// 	redirectOnSave: false
+											// });
+											//
+											// const album = table.store.get(rowIndex)!;
+											//
+											// dlg.load(album.id);
+											// dlg.show();
+										}
+									}), hr(), btn({
+										icon: "delete", text: t("Delete"), handler: async (btn) => {
+											// TODO...
+										}
+									}))
+								})
+							}
+						})
+					]
+				})
 			)
 		);
 
@@ -133,7 +155,7 @@ export class ArtistDetail extends DetailPanel<Artist> {
 					dlg.show();
 				}
 			}),
-			 btn({
+			btn({
 				icon: "delete",
 				title: t("Delete"),
 				handler: () => {
@@ -144,7 +166,8 @@ export class ArtistDetail extends DetailPanel<Artist> {
 			})
 		)
 		this.on("load", (pnl, entity) => {
-			this.title = entity.name
+			this.title = entity.name;
+			void this.form.load(entity.id);
 			if (entity!.photo) {
 				pnl.avatarContainer.items.replace(img({
 					cls: "goui-avatar",

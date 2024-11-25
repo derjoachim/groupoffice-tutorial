@@ -33,6 +33,8 @@ final class Album extends Property {
 	/** @var int  */							
 	public int $genreId;
 
+	public array $reviews;
+
 	protected static function defineMapping(): Mapping {
 		return parent::defineMapping()
 			->addTable("tutorial_music_album", "album")
