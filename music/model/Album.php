@@ -3,6 +3,7 @@ namespace go\modules\tutorial\music\model;
 						
 use go\core\orm\Mapping;
 use go\core\orm\Property;
+use go\core\util\DateTime;
 
 /**
  * Album model
@@ -27,8 +28,8 @@ final class Album extends Property {
 	/** @var string  */							
 	public string $name;
 
-	/** @var \go\core\util\DateTime  */							
-	public \go\core\util\DateTime $releaseDate;
+	/** @var DateTime  */
+	public DateTime $releaseDate;
 
 	/** @var int  */							
 	public int $genreId;

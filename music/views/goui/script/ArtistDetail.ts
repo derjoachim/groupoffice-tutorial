@@ -20,6 +20,7 @@ import {
 } from "@intermesh/goui";
 import {DetailPanel, img, jmapds, router} from "@intermesh/groupoffice-core";
 import {ArtistWindow} from "./ArtistWindow.js";
+import {AlbumWindow} from "./AlbumWindow.js";
 import {Artist} from "./Artist.js";
 
 export class ArtistDetail extends DetailPanel<Artist> {
@@ -74,11 +75,11 @@ export class ArtistDetail extends DetailPanel<Artist> {
 				tbar({}, "->", btn({
 					icon: "add", cls: "primary", text: t("Add"), handler: () => {
 						// TODO
-						// const w = new AlbumWindow();
-						// w.on("close", async () => {
-						// 	this.load(this.entity!.id)
-						// });
-						// w.show();
+						const w = new AlbumWindow(this.entity!.id);
+						w.on("close", async () => {
+							this.load(this.entity!.id)
+						});
+						w.show();
 					}
 				})),
 				this.albumsTable = table({
@@ -122,15 +123,10 @@ export class ArtistDetail extends DetailPanel<Artist> {
 								return btn({
 									icon: "more_vert", menu: menu({}, btn({
 										icon: "edit", text: t("Edit"), handler: async (_btn) => {
-											// TODO...
-											// const dlg = new go.modules.community.tasks.AlbumDialog({
-											// 	redirectOnSave: false
-											// });
-											//
-											// const album = table.store.get(rowIndex)!;
-											//
-											// dlg.load(album.id);
-											// dlg.show();
+											const dlg = new AlbumWindow(this.entity!.id);
+											const album = table.store.get(rowIndex)!;
+											dlg.load(album);
+											dlg.show();
 										}
 									}), hr(), btn({
 										icon: "delete", text: t("Delete"), handler: async (btn) => {
