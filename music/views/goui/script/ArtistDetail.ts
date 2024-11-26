@@ -1,5 +1,4 @@
 import {
-	Button,
 	Component,
 	DataSourceForm,
 	avatar,
@@ -15,13 +14,13 @@ import {
 	Table,
 	tbar,
 	menu,
-	hr,
-	displayfield
+	displayfield,
+    DateTime
 } from "@intermesh/goui";
 import {DetailPanel, img, jmapds, router} from "@intermesh/groupoffice-core";
 import {ArtistWindow} from "./ArtistWindow.js";
 import {AlbumWindow} from "./AlbumWindow.js";
-import {Artist} from "./Artist.js";
+import {Album, Artist} from "./Artist.js";
 
 export class ArtistDetail extends DetailPanel<Artist> {
 	private form: DataSourceForm<Artist>;
@@ -96,12 +95,12 @@ export class ArtistDetail extends DetailPanel<Artist> {
 							id: "name",
 							header: t("Title"),
 							resizable: true,
-							sortable: true
+							sortable: false
 						}),
 						datecolumn({
 							id: "releaseDate",
 							header: t("Release date"),
-							sortable: true
+							sortable: false
 						}),
 						column({
 							resizable: true,
@@ -127,9 +126,10 @@ export class ArtistDetail extends DetailPanel<Artist> {
 											dlg.load(album);
 											dlg.show();
 										}
-									}), hr(), btn({
+									}), btn({
 										icon: "delete", text: t("Delete"), handler: async (btn) => {
-											// TODO...
+											const a  = this.entity!.albums.filter(album => album.id !== record.id);
+											jmapds("Artist").update(this.entity!.id, {albums: a});
 										}
 									}))
 								})
@@ -139,6 +139,12 @@ export class ArtistDetail extends DetailPanel<Artist> {
 				})
 			)
 		);
+
+		this.addCustomFields();
+		// this.addComments();
+		// this.addFiles();
+		// this.addLinks();
+		// this.addHistory();
 
 		this.toolbar.items.add(
 			btn({
@@ -172,7 +178,12 @@ export class ArtistDetail extends DetailPanel<Artist> {
 			} else {
 				pnl.avatarContainer.items.replace(avatar({cls: "goui-avatar", displayName: entity.name}));
 			}
+			entity.albums.sort((a: Album, b: Album) => {
+				const ra: string = <string>a.releaseDate, rb: string = <string>b.releaseDate;
+
+				return DateTime.createFromFormat(ra, "Y-m-d")!.compare(DateTime.createFromFormat(rb, "Y-m-d")!);
+			});
 			this.albumsTable.store.loadData(entity.albums, false);
-		})
+		});
 	}
 }

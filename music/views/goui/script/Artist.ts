@@ -13,7 +13,7 @@ export interface Artist extends BaseEntity {
 
 export interface Album {
 	name: string,
-	releaseDate: DateTime,
+	releaseDate: DateTime|string,
 	genreId: EntityID,
 	artistId: EntityID,
 	id: EntityID
