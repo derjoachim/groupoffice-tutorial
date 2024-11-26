@@ -76,7 +76,8 @@ final class Artist extends Entity
 	{
 		return parent::defineMapping()
 			->addTable("tutorial_music_artist", "artist")
-			->addArray('albums', Album::class, ['id' => 'artistId'], ['orderBy' => 'releaseDate']);
+//			->addArray('albums', Album::class, ['id' => 'artistId'], ['orderBy' => 'releaseDate']);
+			->addArray('albums', Album::class, ['id' => 'artistId']);
 	}
 
 	/**
