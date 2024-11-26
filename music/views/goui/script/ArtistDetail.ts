@@ -74,8 +74,7 @@ export class ArtistDetail extends DetailPanel<Artist> {
 			fieldset({legend: t("Albums")},
 				tbar({}, "->", btn({
 					icon: "add", cls: "primary", text: t("Add"), handler: () => {
-						// TODO
-						const w = new AlbumWindow(this.entity!.id);
+						const w = new AlbumWindow(this.entity!);
 						w.on("close", async () => {
 							this.load(this.entity!.id)
 						});
@@ -123,7 +122,7 @@ export class ArtistDetail extends DetailPanel<Artist> {
 								return btn({
 									icon: "more_vert", menu: menu({}, btn({
 										icon: "edit", text: t("Edit"), handler: async (_btn) => {
-											const dlg = new AlbumWindow(this.entity!.id);
+											const dlg = new AlbumWindow(this.entity!);
 											const album = table.store.get(rowIndex)!;
 											dlg.load(album);
 											dlg.show();

@@ -1,12 +1,14 @@
-import {Component, EntityID, Form, Notifier, Window, btn, combobox, comp, datefield, fieldset, form, t, tbar, textfield} from "@intermesh/goui";
+import {EntityID, Form, Notifier, Window, btn, combobox, comp, datefield, fieldset, form, t, tbar, textfield} from "@intermesh/goui";
 import { jmapds } from "@intermesh/groupoffice-core";
+import {Album, Artist} from "./Artist";
 export class AlbumWindow extends Window {
 
-	private artistId: EntityID;
-	private form: Form;
-	constructor(artistId: EntityID) {
+	private entity: Artist;
+	private albumId: EntityID | undefined;
+	private readonly form: Form;
+	constructor(artist: Artist) {
 		super();
-		this.artistId = artistId;
+		this.entity = artist;
 		Object.assign(this, {
 				title: t("New album"),
 				width: 800,
@@ -20,12 +22,17 @@ export class AlbumWindow extends Window {
 			flex: 1,
 			cls: "vbox",
 			handler: (albumfrm) => {
-				// TODO: Save new album or update current
-				debugger;
 				const v = albumfrm.value;
-				v.artistId = artistId;
-				console.log(v);
-				jmapds("Artist").update(artistId, {albums: [v]}).then((result) => {console.log(result);this.close();}).catch((e) => Notifier.error(e))
+				v.artistId = this.entity.id;
+				if(this.albumId) {
+					const curr = this.entity.albums.find((a) => a.id === this.albumId);
+					Object.assign(curr!, v);
+				} else {
+					this.entity.albums.push(v as Album);
+				}
+				jmapds("Artist").update(this.entity.id, {albums: this.entity.albums})
+					.then((result) => {console.log(result);this.close();})
+					.catch((e) => Notifier.error(e))
 			}
 			},
 			fieldset({
@@ -64,6 +71,7 @@ export class AlbumWindow extends Window {
 
 	public load(record: any) {
 		this.title = record.name;
+		this.albumId = record.id;
 		this.form.value = record;
 	}
 }
