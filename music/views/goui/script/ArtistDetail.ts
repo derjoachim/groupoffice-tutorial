@@ -15,12 +15,14 @@ import {
 	tbar,
 	menu,
 	displayfield,
-    DateTime
+	DateTime
 } from "@intermesh/goui";
-import {DetailPanel, img, jmapds, router} from "@intermesh/groupoffice-core";
+import {client, DetailPanel, img, jmapds, router} from "@intermesh/groupoffice-core";
 import {ArtistWindow} from "./ArtistWindow.js";
 import {AlbumWindow} from "./AlbumWindow.js";
-import {Album, Artist} from "./Artist.js";
+import {Album, Artist, Review} from "./Artist.js";
+import {ReviewsWindow} from "./ReviewsWindow";
+import {ReviewWindow} from "./ReviewWindow";
 
 export class ArtistDetail extends DetailPanel<Artist> {
 	private form: DataSourceForm<Artist>;
@@ -116,22 +118,53 @@ export class ArtistDetail extends DetailPanel<Artist> {
 							// sticky: true,
 							width: 32,
 							id: "btn",
-							renderer: (columnValue: any, record, td, table, rowIndex) => {
-
+							renderer: async (columnValue: any, record, td, table, rowIndex) => {
+								const user = await client.getUser();
+								let hasReviewed = false, reviewId = undefined;
+								for(const currId of record.reviews) {
+									const curr = await jmapds("Review").single(currId);
+									if (curr!.createdBy == user!.id) {
+										hasReviewed = true;
+										reviewId = curr!.id;
+										break;
+									}
+								}
 								return btn({
 									icon: "more_vert", menu: menu({}, btn({
-										icon: "edit", text: t("Edit"), handler: async (_btn) => {
-											const dlg = new AlbumWindow(this.entity!);
-											const album = table.store.get(rowIndex)!;
-											dlg.load(album);
-											dlg.show();
-										}
-									}), btn({
-										icon: "delete", text: t("Delete"), handler: async (btn) => {
-											const a  = this.entity!.albums.filter(album => album.id !== record.id);
-											jmapds("Artist").update(this.entity!.id, {albums: a});
-										}
-									}))
+											icon: "edit", text: t("Edit"), handler: async (_btn) => {
+												const dlg = new AlbumWindow(this.entity!);
+												const album = table.store.get(rowIndex)!;
+												dlg.load(album);
+												dlg.show();
+											}
+										}),
+										btn({
+											icon: "delete", text: t("Delete"), handler: async (btn) => {
+												const a = this.entity!.albums.filter(album => album.id !== record.id);
+												jmapds("Artist").update(this.entity!.id, {albums: a});
+											}
+										}),
+										btn({
+											icon: "reviews",
+											text: t("Show reviews"),
+											hidden: !record.reviews.length,
+											handler: (btn) => {
+												const w = new ReviewsWindow(record);
+												w.show();
+											}
+										}),
+										btn({
+											icon: "rate_review",
+											text: hasReviewed ? t("Update review") : t("Write review"),
+											handler: (_btn) => {
+												const w = new ReviewWindow(record);
+												if (hasReviewed) {
+													w.load(reviewId!);
+												}
+												w.show();
+											}
+										}),
+									)
 								})
 							}
 						})
@@ -171,7 +204,7 @@ export class ArtistDetail extends DetailPanel<Artist> {
 			void this.form.load(entity.id);
 			if (entity!.photo) {
 				pnl.avatarContainer.items.replace(img({
-					cls: "goui-avatar",
+					cls: "goui-avatar-detail",
 					blobId: entity.photo,
 					title: entity.name
 				}));

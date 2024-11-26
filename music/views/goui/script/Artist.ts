@@ -17,4 +17,15 @@ export interface Album {
 	genreId: EntityID,
 	artistId: EntityID,
 	id: EntityID
+	reviews: EntityID[]
+}
+
+export interface Review extends BaseEntity {
+	albumId: EntityID,
+	aclId: EntityID,
+	createdBy: EntityID,
+	modifiedBy: EntityID,
+	rating: 1|2|3|4|5,
+	title: string,
+	body: string
 }

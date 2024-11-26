@@ -36,7 +36,7 @@ final class Review extends AclOwnerEntity
 		return parent::defineMapping()
 			->addTable('tutorial_music_review')
 			->addQuery((new Query())->select('a.name AS albumtitle')
-				->join('tutorial_music_album', 'a', 'a.id=music_review.albumId'));
+				->join('tutorial_music_album', 'a', 'a.id=tutorial_music_review.albumId'));
 	}
 
 	protected function internalSave(): bool

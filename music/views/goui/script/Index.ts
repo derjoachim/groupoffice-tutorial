@@ -5,6 +5,11 @@ import {t, translate, EntityID} from "@intermesh/goui";
 modules.register(  {
 	package: "tutorial",
 	name: "music",
+	entities: [
+		"Genre",
+		"Artist",
+		"Review"
+	],
 	async init () {
 
 		client.on("authenticated",  (client, session) => {
