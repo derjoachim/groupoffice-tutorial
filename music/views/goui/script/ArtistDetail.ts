@@ -15,7 +15,7 @@ import {
 	tbar,
 	menu,
 	displayfield,
-	DateTime
+	DateTime, h4
 } from "@intermesh/goui";
 import {client, DetailPanel, img, jmapds, router} from "@intermesh/groupoffice-core";
 import {ArtistWindow} from "./ArtistWindow.js";
@@ -72,112 +72,114 @@ export class ArtistDetail extends DetailPanel<Artist> {
 				),
 			),
 
-			fieldset({legend: t("Albums")},
-				tbar({}, "->", btn({
-					icon: "add", cls: "primary", text: t("Add"), handler: () => {
-						const w = new AlbumWindow(this.entity!);
-						w.on("close", async () => {
-							this.load(this.entity!.id)
-						});
-						w.show();
-					}
-				})),
-				this.albumsTable = table({
-					fitParent: true,
-					// headers: false,
-					store: store({
-						data: []
-					}),
-					columns: [
-						column({
-							id: "id",
-							hidden: true,
+			comp({cls:"card"},
+				fieldset({},
+					tbar({}, h4(t("Albums")), "->", btn({
+						icon: "add", cls: "primary", text: t("Add"), handler: () => {
+							const w = new AlbumWindow(this.entity!);
+							w.on("close", async () => {
+								this.load(this.entity!.id)
+							});
+							w.show();
+						}
+					})),
+					this.albumsTable = table({
+						fitParent: true,
+						// headers: false,
+						store: store({
+							data: []
 						}),
-						column({
-							id: "name",
-							header: t("Title"),
-							resizable: true,
-							sortable: false
-						}),
-						datecolumn({
-							id: "releaseDate",
-							header: t("Release date"),
-							sortable: false
-						}),
-						column({
-							resizable: true,
-							id: "genreId",
-							header: t("Genre"),
-							renderer: async (v) => {
-								const g = await jmapds("Genre").single(v);
-								return g!.name;
-							}
-						}),
-						column({
-							resizable: false,
-							// sticky: true,
-							width: 32,
-							id: "btn",
-							renderer: async (columnValue: any, record, td, table, rowIndex) => {
-								const user = await client.getUser();
-								let hasReviewed = false, reviewId = undefined;
-								for(const currId of record.reviews) {
-									const curr = await jmapds("Review").single(currId);
-									if (curr!.createdBy == user!.id) {
-										hasReviewed = true;
-										reviewId = curr!.id;
-										break;
-									}
+						columns: [
+							column({
+								id: "id",
+								hidden: true,
+							}),
+							column({
+								id: "name",
+								header: t("Title"),
+								resizable: true,
+								sortable: false
+							}),
+							datecolumn({
+								id: "releaseDate",
+								header: t("Release date"),
+								sortable: false
+							}),
+							column({
+								resizable: true,
+								id: "genreId",
+								header: t("Genre"),
+								renderer: async (v) => {
+									const g = await jmapds("Genre").single(v);
+									return g!.name;
 								}
-								return btn({
-									icon: "more_vert", menu: menu({}, btn({
-											icon: "edit", text: t("Edit"), handler: async (_btn) => {
-												const dlg = new AlbumWindow(this.entity!);
-												const album = table.store.get(rowIndex)!;
-												dlg.load(album);
-												dlg.show();
-											}
-										}),
-										btn({
-											icon: "delete", text: t("Delete"), handler: async (btn) => {
-												const a = this.entity!.albums.filter(album => album.id !== record.id);
-												jmapds("Artist").update(this.entity!.id, {albums: a});
-											}
-										}),
-										btn({
-											icon: "reviews",
-											text: t("Show reviews"),
-											hidden: !record.reviews.length,
-											handler: (btn) => {
-												const w = new ReviewsWindow(record);
-												w.show();
-											}
-										}),
-										btn({
-											icon: "rate_review",
-											text: hasReviewed ? t("Update review") : t("Write review"),
-											handler: (_btn) => {
-												const w = new ReviewWindow(record);
-												if (hasReviewed) {
-													w.load(reviewId!);
+							}),
+							column({
+								resizable: false,
+								sticky: true,
+								width: 32,
+								id: "btn",
+								renderer: async (columnValue: any, record, td, table, rowIndex) => {
+									const user = client.user;
+									let hasReviewed = false, reviewId = undefined;
+									for(const currId of record.reviews) {
+										const curr = await jmapds("Review").single(currId);
+										if (curr!.createdBy == user!.id) {
+											hasReviewed = true;
+											reviewId = curr!.id;
+											break;
+										}
+									}
+									return btn({
+										icon: "more_vert", menu: menu({}, btn({
+												icon: "edit", text: t("Edit"), handler: async (_btn) => {
+													const dlg = new AlbumWindow(this.entity!);
+													const album = table.store.get(rowIndex)!;
+													dlg.load(album);
+													dlg.show();
 												}
-												w.show();
-											}
-										}),
-									)
-								})
-							}
-						})
-					]
-				})
+											}),
+											btn({
+												icon: "delete", text: t("Delete"), handler: async (btn) => {
+													const a = this.entity!.albums.filter(album => album.id !== record.id);
+													jmapds("Artist").update(this.entity!.id, {albums: a});
+												}
+											}),
+											btn({
+												icon: "reviews",
+												text: t("Show reviews"),
+												hidden: !record.reviews.length,
+												handler: (btn) => {
+													const w = new ReviewsWindow(record);
+													w.show();
+												}
+											}),
+											btn({
+												icon: "rate_review",
+												text: hasReviewed ? t("Update review") : t("Write review"),
+												handler: (_btn) => {
+													const w = new ReviewWindow(record);
+													if (hasReviewed) {
+														w.load(reviewId!);
+													}
+													w.show();
+												}
+											}),
+										)
+									})
+								}
+							})
+						]
+					})
+				)
 			)
 		);
 
 		this.addCustomFields();
-		// this.addComments();
-		// this.addFiles();
-		// this.addLinks();
-		// this.addHistory();
+		this.addComments();
+		this.addFiles();
+		this.addLinks();
+		this.addHistory();
 
 		this.toolbar.items.add(
 			btn({

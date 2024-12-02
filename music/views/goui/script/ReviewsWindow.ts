@@ -34,7 +34,7 @@ export class ReviewsWindow extends Window {
 						})
 					);
 				} else {
-					avatarCnt.items.replace(avatar({cls: "goui-avatar", displayName: user!.name}));
+					avatarCnt.items.replace(avatar({cls: "goui-avatar", displayName: user!.displayName}));
 				}
 
 				scrollCmp.items.add(comp({cls: "card pad"},
