@@ -60,7 +60,7 @@ export class ReviewsWindow extends Window {
 	private addRating(rating: 1 | 2 | 3 | 4 | 5): Component {
 		const cmp = comp({cls: "hbox"});
 		for (let r = 1; r <= rating; r++) {
-			cmp.items.add(comp({cls: "icon", tagName: "i", text: "star"}))
+			cmp.items.add(comp({cls: "icon", tagName: "i", text: "star_rate"}))
 		}
 		return cmp;
 	}

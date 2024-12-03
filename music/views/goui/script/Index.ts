@@ -25,7 +25,7 @@ modules.register(  {
 
 			router.add(/^music\/(\d+)$/, (id: EntityID) => {
 				modules.openMainPanel("music");
-				mainPanel.load(id);
+				mainPanel.setArtistId(id);
 			});
 
 			router.add(/^music$/, () => {

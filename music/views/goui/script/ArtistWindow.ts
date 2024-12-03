@@ -14,7 +14,7 @@ export class ArtistWindow extends FormWindow {
 
 		this.form.on("save", (form, data, isNew) => {
 			if (isNew) {
-				router.goto("artist/" + data.id);
+				void router.goto("artist/" + data.id);
 			}
 		})
 

@@ -7,34 +7,28 @@ import {
 	Notifier,
 	paginator,
 	searchbtn,
-	splitter,
 	t,
 	tbar
 } from "@intermesh/goui";
 import {
 	authManager,
 	router,
-	FilterCondition,
+	MainThreeColumnPanel,
 } from "@intermesh/groupoffice-core";
 import {ArtistTable} from "./ArtistTable.js";
 import {GenreTable} from "./GenreTable.js";
 import { ArtistDetail } from "./ArtistDetail.js";
 import {ArtistWindow} from "./ArtistWindow.js";
 
-export class Main extends Component {
-	private artistTable: ArtistTable;
-
+export class Main extends MainThreeColumnPanel {
+	protected east!: ArtistDetail;
+	private artistTable!: ArtistTable;
 
 	private genreTable!: GenreTable;
-	private west: Component;
-	private center: Component;
-	private east: ArtistDetail;
 
 	constructor() {
-		super("section");
+		super("music");
 
-		this.id = "music";
-		this.cls = "vbox fit";
 		this.on("render", async () => {
 			try {
 				await authManager.requireLogin();
@@ -44,119 +38,18 @@ export class Main extends Component {
 			}
 
 			await this.genreTable.store.load();
-			await this.artistTable.store.load();
+			await this.artistTable!.store.load();
 		});
-
-
-		this.artistTable = new ArtistTable();
-		this.artistTable.on("navigate", async (table: ArtistTable, rowIndex: number) => {
-			await router.goto("music/" + table.store.get(rowIndex)!.id);
-		});
-
-		this.west = this.createWest();
-		this.items.add(
-			comp({
-					flex: 1, cls: "hbox mobile-cards"
-				},
-
-				this.west,
-
-				splitter({
-					stateId: "music-splitter-west",
-					resizeComponentPredicate: this.west
-				}),
-
-				this.center = comp({
-						cls: 'active vbox',
-						itemId: 'table-container',
-						flex: 1,
-						style: {
-							minWidth: "365px", //for the resizer's boundaries
-							maxWidth: "850px"
-						}
-					},
-
-					tbar({},
-						btn({
-							cls: "for-small-device",
-							title: t("Menu"),
-							icon: "menu",
-							handler: (button, ev) => {
-								this.activatePanel(this.west);
-							}
-						}),
-
-						'->',
-
-						searchbtn({
-							listeners: {
-								input: (sender, text) => {
-
-									(this.artistTable.store.queryParams.filter as FilterCondition).text = text;
-									this.artistTable.store.load();
-
-								}
-							}
-						}),
-
-						mstbar({table: this.artistTable}),
-
-						btn({
-							itemId: "add",
-							icon: "add",
-							cls: "filled primary",
-							handler: async () => {
-								const w = new ArtistWindow();
-								w.on("close", async () => {
-									debugger;
-								});
-								w.show();
-
-							}
-						})
-					),
-
-					comp({
-							flex: 1,
-							stateId: "music",
-							cls: "scroll border-top main"
-						},
-						this.artistTable
-					),
-
-
-					paginator({
-						store: this.artistTable.store
-					})
-				),
-
-
-				splitter({
-					stateId: "music-splitter",
-					resizeComponentPredicate: "table-container"
-				}),
-
-				this.east = new ArtistDetail()
-			)
-		);
 	}
 
-	private activatePanel(active: Component) {
-		this.center.el.classList.remove("active");
-		this.east.el.classList.remove("active");
-		this.west.el.classList.remove("active");
-
-		active.el.classList.add("active");
-	}
-
-	private createWest(): Component {
+	protected createWest(): Component {
 		this.genreTable = new GenreTable();
 		this.genreTable.rowSelectionConfig = {
 			multiSelect: true,
 			listeners: {
 				selectionchange: (tableRowSelect) => {
 					const genreIds = tableRowSelect.selected.map((index: number) => tableRowSelect.list.store.get(index)!.id);
-					(this.artistTable.store.queryParams.filter as FilterCondition).genres = genreIds;
+					this.artistTable.store.queryParams.filter!.genres = genreIds;
 					this.artistTable.store.load();
 				}
 			}
@@ -188,14 +81,80 @@ export class Main extends Component {
 		);
 	}
 
-	async load(id?: EntityID) {
-		if(id) {
-			void this.east.load(id);
-			this.activatePanel(this.east);
-		} else {
-			this.activatePanel(this.center);
-		}
+	protected createEast(): ArtistDetail {
+		const detail = new ArtistDetail();
+		detail.itemId = "detail";
+		detail.stateId = "artist-detail";
+		detail.toolbar.items.insert(0,this.showCenterButton());
+		return detail;
+	}
 
+	protected createCenter(): Component {
+		this.artistTable = new ArtistTable();
+		this.artistTable.on("navigate", async (table: ArtistTable, rowIndex: number) => {
+			await router.goto("music/" + table.store.get(rowIndex)!.id);
+		});
+
+		return comp({
+				cls: 'active vbox',
+				itemId: 'table-container',
+				flex: 1
+			},
+
+			tbar({},
+				btn({
+					cls: "for-small-device",
+					title: t("Menu"),
+					icon: "menu",
+					handler: (button, ev) => {
+						this.activatePanel(this.west);
+					}
+				}),
+
+				'->',
+
+				searchbtn({
+					listeners: {
+						input: (sender, text) => {
+							this.artistTable.store.queryParams.filter!.text = text;
+							this.artistTable.store.load();
+						}
+					}
+				}),
+
+				mstbar({table: this.artistTable}),
+
+				btn({
+					itemId: "add",
+					icon: "add",
+					cls: "filled primary",
+					handler: async () => {
+						const w = new ArtistWindow();
+						w.on("close", async () => {});
+						w.show();
+
+					}
+				})
+			),
+
+			comp({
+					flex: 1,
+					stateId: "music",
+					cls: "scroll border-top main"
+				},
+				this.artistTable
+			),
+
+
+			paginator({
+				store: this.artistTable.store
+			})
+		);
+	}
+
+	async setArtistId(id: EntityID) {
+		void this.east.load(id);
+		this.activatePanel(this.east);
 	}
 
 }
